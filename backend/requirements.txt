@@ -1,0 +1,7 @@
+Django==4.0.3
+psycopg2==2.9.3
+django-qsessions==1.1.3
+djangorestframework==3.13.1
+dj_database_url==0.5.0
+redis==4.2.2
+django-revproxy-verteva==0.10.0

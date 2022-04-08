@@ -1,0 +1,11 @@
+from .base import *
+
+DEBUG = True
+# DATABASE_URL = 'postgres://postgres:1234@localhost:5432/rentaly'
+
+DATABASES = {
+    'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600),
+}
+
+SECRET_KEY = 'complex-and-very-long-key'
+LOGGING = []

@@ -10,11 +10,22 @@ const initialState = {
   user: null,
 }
 
+export const register = createAsyncThunk(
+  'auth/register', async (payload, thunkAPI) => {
+    try {
+      const res = await AuthService.register(payload);
+      return res.data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(parseErrors(e));
+    }
+  }
+);
+
 export const login = createAsyncThunk(
   'auth/login', async ({email, password}, thunkAPI) => {
     try {
       const res = await AuthService.login({email, password});
-      return res.data
+      return res.data;
     } catch (e) {
       return thunkAPI.rejectWithValue(parseErrors(e));
     }

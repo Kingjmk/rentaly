@@ -45,6 +45,13 @@ class Roles(models.TextChoices):
     REALTOR = 'REALTOR', _('realtor')
     CLIENT = 'CLIENT', _('client')
 
+    @classmethod
+    def allowed_types(cls):
+        return [
+            (cls.CLIENT.value, cls.CLIENT.value),
+            (cls.REALTOR.value, cls.REALTOR.value),
+        ]
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     user_permissions = None

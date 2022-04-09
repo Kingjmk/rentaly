@@ -1,17 +1,28 @@
-import React, {Text} from 'react';
-import Alert from '@mui/material/Alert';
+import React from 'react';
+import {Alert} from '@mui/material';
 
 export const hasError = (value) => value !== undefined;
 
+
+const TextArrayLineBreak = ({array}) => (
+  <>
+    {array.reduce((m1, m2) => (
+      <>
+        {m1} <br/>
+        {m2}
+      </>
+    ))}
+  </>
+);
 
 export const getErrorMessage = (value) => {
   if (!hasError(value)) return null;
 
   if (Array.isArray(value)) {
-    return value.reduce((a, b) => `${a}, ${b}`);
+    return (<TextArrayLineBreak array={value}/>);
   }
 
-  return value;
+  return ({value});
 };
 
 export const ErrorAlert = ({error, label}) => {
@@ -27,7 +38,7 @@ export const ErrorAlert = ({error, label}) => {
 
   return (
     <Alert severity='error'>
-      {errors.map((message, index) => (<div key={index}>{message}</div>))}
+      <TextArrayLineBreak array={errors}/>
     </Alert>
   );
 }
@@ -37,7 +48,7 @@ export const SuccessAlert = ({isSuccessful, message = 'Success'}) => {
 
   return (
     <Alert severity='success'>
-      <div>{message}</div>
+      <span>{message}</span>
     </Alert>
   );
 }

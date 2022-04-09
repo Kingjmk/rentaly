@@ -1,16 +1,23 @@
 import React from 'react';
 import {Navigate} from 'react-router-dom';
+import RegisterPage from 'pages/auth/RegisterPage';
 import LoginPage from 'pages/auth/LoginPage';
 import LogoutPage from 'pages/auth/LogoutPage';
 import DashboardPage from 'pages/DashboardPage';
 
-export const IndexRedirect = () => (<Navigate to={{pathname: '/dashboard'}}/>);
+export const IndexRedirect = () => (<Navigate to={'/dashboard'}/>);
 
 export const routes = [
   {
     path: '',
     component: IndexRedirect,
     exact: false,
+    isPublic: true,
+  },
+  {
+    path: 'register',
+    component: RegisterPage,
+    exact: true,
     isPublic: true,
   },
   {

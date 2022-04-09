@@ -3,7 +3,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
   Avatar, Button, TextField, Link, Grid, Box, Typography, Container,
 } from '@mui/material';
-
+import {Link as RouterLink} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {IndexRedirect} from 'routes';
 import {PlainLayout} from 'components/layouts';
@@ -116,7 +116,7 @@ class Page extends React.Component {
               </Button>
               <Grid container>
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link component={RouterLink} to={'/register'} variant="body2">
                     {'Don\'t have an account? Sign Up'}
                   </Link>
                 </Grid>

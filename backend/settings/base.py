@@ -91,9 +91,6 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # One month session time
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {

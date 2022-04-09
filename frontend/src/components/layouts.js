@@ -27,13 +27,18 @@ const UserButtons = () => {
   const {isAuthenticated, user} = useSelector((state) => state.authentication);
   if (!isAuthenticated) {
     return (
-      <Button component={RouterLink} to={'/login'} variant='outlined' sx={{my: 1, mx: 1.5}}>
-        Login
-      </Button>
+      <React.Fragment>
+        <Button component={RouterLink} to={'/login'} color='primary' sx={{my: 1, mx: 1.5}}>
+          Login
+        </Button>
+        <Button component={RouterLink} to={'/register'} color="primary" variant='contained' sx={{my: 1, mx: 1.5}}>
+          Register
+        </Button>
+      </React.Fragment>
     )
   } else {
     return (
-      <UserMenu user={user} />
+      <UserMenu user={user}/>
     )
   }
 }

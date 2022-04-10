@@ -5,3 +5,5 @@ djangorestframework==3.13.1
 dj_database_url==0.5.0
 redis==4.2.2
 django-revproxy-verteva==0.10.0
+django-filter==21.1
+Pillow==9.1.0

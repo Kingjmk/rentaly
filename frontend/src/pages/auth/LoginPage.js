@@ -1,128 +1,115 @@
 import React from 'react';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
-  Avatar, Button, TextField, Link, Grid, Box, Typography, Container,
+  Avatar, TextField, Link, Grid, Typography, Container, Card, CardContent,
 } from '@mui/material';
+import {LoadingButton} from '@mui/lab';
 import {Link as RouterLink} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {IndexRedirect} from 'routes';
 import {PlainLayout} from 'components/layouts';
-import {getErrorMessage, hasError, ErrorAlert, SuccessAlert} from 'utils/forms';
+import ReactiveForm from 'components/ReactiveForm';
+import {getErrorMessage, hasError, SuccessAlert} from 'utils/forms';
 import {login} from 'store/auth/authenticationSlice';
+
 
 class Page extends React.Component {
   constructor(props) {
     super(props);
-
+    this.navigate = this.props.navigate;
     this.state = {
-      loading: false,
       success: false,
-      errors: [],
     }
+
+    this.renderForm = this.renderForm.bind(this);
   }
 
-  handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+  handleSuccess = async () => {
+    this.setState(state => state.success = true);
+    setTimeout(() => {
+      // wait before redirecting to login to leave time for the user to read the message
+      this.navigate('/dashboard');
+    }, 1000);
+  }
 
-    try {
-      this.setState({
-        loading: true,
-        success: false,
-        errors: [],
-      });
-
-      await this.props.dispatch(login({
-        email: data.get('email'),
-        password: data.get('password'),
-      })).unwrap();
-
-      this.setState({
-        loading: false,
-        success: true,
-        errors: [],
-      });
-    } catch (e) {
-      if (e.apiErrors) {
-        this.setState({
-          loading: false,
-          success: false,
-          errors: e.apiErrors,
-        });
-      } else {
-        this.setState({
-          loading: false,
-          success: false,
-          errors: {non_field_errors: ['Unknown error']},
-        });
-      }
+  handleSubmit = async (event, data) => {
+    // Submit form
+    const submitData = {
+      ...data,
     }
+
+    return await this.props.dispatch(login(submitData)).unwrap();
   };
+
+  renderForm({loading, errors}) {
+    return (
+      <React.Fragment>
+        <SuccessAlert fullWidth isSuccessful={this.state.success} message={'Login Successful, Redirecting...'}/>
+        <TextField
+          error={hasError(errors?.email)}
+          margin="normal"
+          size="small"
+          required
+          fullWidth
+          id="email"
+          label="Email Address"
+          name="email"
+          autoComplete="email"
+          autoFocus
+          helperText={getErrorMessage(errors?.email)}
+        />
+        <TextField
+          error={hasError(errors?.password)}
+          margin="normal"
+          size="small"
+          required
+          fullWidth
+          name="password"
+          label="Password"
+          type="password"
+          id="password"
+          autoComplete="current-password"
+          helperText={getErrorMessage(errors?.password)}
+        />
+        <LoadingButton
+          loading={loading || this.state.success}
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{mt: 2, mb: 2}}
+        >
+          Sign In
+        </LoadingButton>
+        <Grid container>
+          <Grid item>
+            <Link component={RouterLink} to={'/register'} variant="body2">
+              {'Don\'t have an account? Sign Up'}
+            </Link>
+          </Grid>
+        </Grid>
+      </React.Fragment>
+    );
+  }
 
   render() {
     return (
       <PlainLayout hasFooter={true}>
-        {this.state.success && <IndexRedirect />}
-        <Container component="main" maxWidth="xs">
-          <Box
-            sx={{
-              marginTop: 8,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <Avatar sx={{m: 1, bgcolor: 'secondary.main'}}>
-              <LockOutlinedIcon/>
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign in
-            </Typography>
-            <Box component="form" onSubmit={this.handleSubmit} noValidate sx={{mt: 1}}>
-              <ErrorAlert error={this.state.errors?.non_field_errors}/>
-              <SuccessAlert isSuccessful={this.state.success} message={'Login Successful, Redirecting...'}/>
-              <TextField
-                error={hasError(this.state.errors?.email)}
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                helperText={getErrorMessage(this.state.errors?.email)}
-              />
-              <TextField
-                error={hasError(this.state.errors?.password)}
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                helperText={getErrorMessage(this.state.errors?.password)}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{mt: 3, mb: 2}}
-                disabled={this.state.loading || this.state.success}
-              >
-                Sign In
-              </Button>
-              <Grid container>
-                <Grid item>
-                  <Link component={RouterLink} to={'/register'} variant="body2">
-                    {'Don\'t have an account? Sign Up'}
-                  </Link>
-                </Grid>
-              </Grid>
-            </Box>
-          </Box>
+        <Container component="main" maxWidth="xs" sx={{
+          mt: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}>
+          <Card variant="outlined">
+            <CardContent sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              <Avatar sx={{m: 1, bgcolor: 'secondary.main'}}>
+                <LockOutlinedIcon/>
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Sign in
+              </Typography>
+              <ReactiveForm onSubmit={this.handleSubmit} onSuccess={this.handleSuccess} render={this.renderForm}/>
+            </CardContent>
+          </Card>
         </Container>
       </PlainLayout>
     )

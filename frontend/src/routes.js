@@ -1,9 +1,10 @@
 import React from 'react';
-import {Navigate} from 'react-router-dom';
+import {Navigate, useNavigate, useLocation} from 'react-router-dom';
 import RegisterPage from 'pages/auth/RegisterPage';
 import LoginPage from 'pages/auth/LoginPage';
 import LogoutPage from 'pages/auth/LogoutPage';
 import DashboardPage from 'pages/DashboardPage';
+import MapPage from 'pages/core/MapPage';
 
 export const IndexRedirect = () => (<Navigate to={'/dashboard'}/>);
 
@@ -38,12 +39,25 @@ export const routes = [
     exact: true,
     isPublic: true,
   },
+  {
+    path: 'map',
+    component: MapPage,
+    exact: true,
+    isPublic: true,
+  },
 ];
+
+const RoutingComponent = ({component: Component}) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  return (<Component location={location} navigate={navigate} />)
+}
 
 export class AuthenticateRoute extends React.Component {
   // Private route restrict to access public pages after login.
   render() {
-    let {isAuthenticated, isPublic, location, component: Component} = this.props;
+    let {isAuthenticated, isPublic, location, component} = this.props;
     if (!isPublic && !isAuthenticated) {
       return (
         <Navigate
@@ -55,9 +69,7 @@ export class AuthenticateRoute extends React.Component {
       )
     }
 
-    return (
-      <Component/>
-    );
+    return (<RoutingComponent component={component} />);
   }
 }
 

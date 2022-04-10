@@ -21,3 +21,13 @@ class Apartment(models.Model):
         ordering = ['-id']
         verbose_name = _('Apartment')
         verbose_name_plural = _('Apartments')
+
+
+class ApartmentImages(models.Model):
+    apartment = models.ForeignKey('Apartment', on_delete=models.PROTECT, related_name='images')
+    image = models.ImageField()
+
+    class Meta:
+        ordering = ['-id']
+        verbose_name = _('Apartment image')
+        verbose_name_plural = _('Apartments images')

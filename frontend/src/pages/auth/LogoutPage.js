@@ -1,13 +1,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {PlainLayout} from 'components/layouts';
 import {logout} from 'store/auth/authenticationSlice';
-import {IndexRedirect} from 'routes';
+import LoadingPage from 'pages/LoadingPage';
+
 
 class Page extends React.Component {
   constructor(props) {
     super(props);
-
+    this.navigate = this.props.navigate;
     this.state = {loading: false};
   }
 
@@ -16,7 +16,7 @@ class Page extends React.Component {
       this.setState({loading: true});
 
       await this.props.dispatch(logout({})).unwrap();
-
+      this.navigate('/dashboard');
       this.setState({
         loading: false,
       });
@@ -29,10 +29,8 @@ class Page extends React.Component {
 
   render() {
     return (
-      <PlainLayout>
-        {!this.state.loading && <IndexRedirect />}
-      </PlainLayout>
-    )
+      <LoadingPage/>
+    );
   }
 }
 

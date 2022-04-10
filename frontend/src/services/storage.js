@@ -20,7 +20,7 @@ export const Storage = {
 
   clear() {
     localStorage.clear();
-  }
+  },
 }
 
 export default Storage;

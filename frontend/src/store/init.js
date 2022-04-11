@@ -1,6 +1,6 @@
 import {tryAuthenticate} from 'store/auth/authenticationSlice';
 
 
-export const appInitActions = [
-    tryAuthenticate(),
-];
+export const appInitActions = async (dispatch) => {
+  await dispatch(tryAuthenticate()).unwrap();
+};

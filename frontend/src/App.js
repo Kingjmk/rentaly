@@ -17,7 +17,7 @@ const App = () => {
 
   useEffect(() => {
     (async () => {
-      await Promise.all(appInitActions.map(action => dispatch(action).unwrap()));
+      await appInitActions(dispatch);
       setLoading(false);
     })();
 

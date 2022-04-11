@@ -23,9 +23,12 @@ class Apartment(models.Model):
         verbose_name_plural = _('Apartments')
 
 
-class ApartmentImages(models.Model):
+class ApartmentImage(models.Model):
     apartment = models.ForeignKey('Apartment', on_delete=models.PROTECT, related_name='images')
     image = models.ImageField()
+
+    created_on = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_on = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-id']

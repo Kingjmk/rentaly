@@ -4,6 +4,10 @@ export default {
   WEBSITE_NAME: 'Rently',
   WEBSITE_DESCRIPTION: 'Search for an apartment to rent, anywhere',
   AUTHOR_LINK: 'https://github.com/kingjmk',
+  DEFAULT_COORDINATES: {
+    lat: 31.904,
+    lng: 35.204,
+  },
   API_HEADERS: {
     'Content-Type': 'application/json',
     Accept: 'application/json',

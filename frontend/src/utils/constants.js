@@ -4,6 +4,7 @@ export default {
   WEBSITE_NAME: 'Rently',
   WEBSITE_DESCRIPTION: 'Search for an apartment to rent, anywhere',
   AUTHOR_LINK: 'https://github.com/kingjmk',
+  TILE_LAYER_URL: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   DEFAULT_COORDINATES: {
     lat: 31.904,
     lng: 35.204,

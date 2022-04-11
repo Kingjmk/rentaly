@@ -1,14 +1,55 @@
 import React from 'react'
-import {TextField, Typography, Box, Grid, Card, CardMedia, CardContent, CardActions, Button} from '@mui/material';
+import {
+  TextField, Typography, Box, Grid, Card, CardMedia, CardContent, CardActions, Button, CircularProgress,
+} from '@mui/material';
 import {LoadingButton, Masonry} from '@mui/lab';
-import {DefaultLayout} from 'components/layouts';
+import {PlainLayout, DefaultAppBar} from 'components/layouts';
 import constants from 'utils/constants';
-import {GoogleMap, LoadScript} from '@react-google-maps/api';
+import {MapContainer, TileLayer} from 'react-leaflet';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
+import apartmentService from 'services/apartments';
+import ApartmentPlaceholderImg from 'assets/apartment_placeholder.png';
 
 
-const ItemsComponent = ({itemList}) => {
+const ImageComponent = ({images}) => {
+  if (images.length === 0) {
+    return (
+      <CardMedia
+        component="img"
+        alt="apartment image"
+        height="200"
+        image={ApartmentPlaceholderImg}
+      />
+    )
+  }
+
+  return (
+    <CardMedia
+      component="img"
+      alt="apartment house"
+      height="200"
+      image={`${images[0].image_url}`}
+    />
+  );
+}
+
+const ItemsComponent = ({loading, itemList}) => {
+  if (loading) {
+    return (
+      <Grid
+        sx={{height: '100%'}}
+        container
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <CircularProgress fontSize="large"/>
+        <Typography component="h1" variant="h6">Loading...</Typography>
+      </Grid>
+    );
+  }
+
   if (itemList.length === 0) {
     return (
       <Grid
@@ -18,32 +59,26 @@ const ItemsComponent = ({itemList}) => {
         justifyContent="center"
         alignItems="center"
       >
-        <SentimentDissatisfiedIcon fontSize="large" />
+        <SentimentDissatisfiedIcon fontSize="large"/>
         <Typography component="h1" variant="h6">No results found</Typography>
       </Grid>
     );
   }
 
   return (
-    <Masonry columns={2} spacing={2} defaultHeight={450} sx={{m: 0}}>
-      {itemList.map((item) => (
-        <Card>
-          <CardMedia
-            component="img"
-            alt="apartment house"
-            height="140"
-            image={`${item.img}?w=248&fit=crop&auto=format`}
-          />
+    <Masonry columns={{md: 1, lg: 2}} spacing={2} defaultHeight={450} sx={{m: 0}}>
+      {itemList.map((item, index) => (
+        <Card key={index}>
+          <ImageComponent images={item.images}/>
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
-              {item.title}
+              {item.name}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {item.author}
+              {item.name}
             </Typography>
           </CardContent>
           <CardActions>
-            <Button size="small">Share</Button>
             <Button size="small">Learn More</Button>
           </CardActions>
         </Card>
@@ -64,18 +99,13 @@ class MapComponent extends React.Component {
 
   render() {
     return (
-      // Important! Always set the container height explicitly
       <Box sx={this.props.sx}>
-        <LoadScript
-          id="script-loader"
-        >
-          <GoogleMap
-            mapContainerStyle={{width: '100%', height: '100%'}}
-            center={this.state.center}
-            zoom={this.state.zoom}
-          >
-          </GoogleMap>
-        </LoadScript>
+        <MapContainer center={this.state.center} zoom={this.state.zoom} style={{height: '100%', width: '100%'}}>
+          <TileLayer
+            attribution={`&copy; ${constants.WEBSITE_NAME}`}
+            url={constants.TILE_LAYER_URL}
+          />
+        </MapContainer>
       </Box>
     );
   }
@@ -94,6 +124,7 @@ export default class MapPage extends React.Component {
         price_per_month: urlParams.get('price_per_month'),
         number_of_rooms: urlParams.get('number_of_rooms'),
       },
+      loading: false,
       itemList: [],
     }
 
@@ -103,10 +134,30 @@ export default class MapPage extends React.Component {
   setFilterValue(field, value) {
     this.setState(state => {
       state.filters[field] = value
+      return state;
     });
   }
 
-  loadItems() {}
+  async loadItems() {
+    this.setState(state => {
+      state.loading = true;
+      return state;
+    });
+
+    const res = await apartmentService.search({
+      query: {
+        area_size: this.state.filters.area_size,
+        price_per_month: this.state.filters.price_per_month,
+        number_of_rooms: this.state.filters.number_of_rooms,
+      },
+    });
+
+    this.setState(state => {
+      state.loading = false;
+      state.itemList = res.data.results;
+      return state;
+    });
+  }
 
   renderFilterForm() {
     return (
@@ -116,31 +167,31 @@ export default class MapPage extends React.Component {
           label="Address"
           size="small"
           sx={{mr: 2}}
-          onChange={(event, newValue) => this.setFilterValue('address', newValue)}
+          onChange={(event) => this.setFilterValue('address', event.target.value)}
         />
         <TextField
           defaultValue={this.state.filters.area_size}
           label="Size"
           size="small"
           sx={{mr: 2}}
-          onChange={(event, newValue) => this.setFilterValue('area_size', newValue)}
+          onChange={(event) => this.setFilterValue('area_size', event.target.value)}
         />
         <TextField
           defaultValue={this.state.filters.price_per_month}
           label="Price per month"
           size="small"
           sx={{mr: 2}}
-          onChange={(event, newValue) => this.setFilterValue('price_per_month', newValue)}
+          onChange={(event) => this.setFilterValue('price_per_month', event.target.value)}
         />
         <TextField
           defaultValue={this.state.filters.number_of_rooms}
           label="Number of rooms"
           size="small"
           sx={{mr: 2}}
-          onChange={(event, newValue) => this.setFilterValue('number_of_rooms', newValue)}
+          onChange={(event) => this.setFilterValue('number_of_rooms', event.target.value)}
         />
         <Box sx={{display: 'flex', justifyContent: 'end', alignItems: 'center'}}>
-          <LoadingButton color="primary" variant='contained'>
+          <LoadingButton loading={this.state.loading} color="primary" variant='contained' onClick={() => this.loadItems()}>
             <SearchOutlinedIcon/> Search
           </LoadingButton>
         </Box>
@@ -150,7 +201,8 @@ export default class MapPage extends React.Component {
 
   render() {
     return (
-      <DefaultLayout hasFooter={false}>
+      <PlainLayout>
+        <DefaultAppBar maxWidth={'none'}/>
         <Box backgroundColor={'white'} sx={{p: 1}}>
           <Typography variant='h6' color='inherit' noWrap style={{my: 3}}>
             Apartments in the area
@@ -160,10 +212,10 @@ export default class MapPage extends React.Component {
         <Box sx={{display: 'flex', flexGrow: 1, maxHeight: 'calc(100vh - 153px)'}}>
           <MapComponent sx={{flexGrow: 1, width: '100%'}}/>
           <Box sx={{width: '50%', maxHeight: '100%', overflowY: 'auto'}}>
-            <ItemsComponent itemList={this.state.itemList}/>
+            <ItemsComponent loading={this.state.loading} itemList={this.state.itemList}/>
           </Box>
         </Box>
-      </DefaultLayout>
+      </PlainLayout>
     );
   }
 }

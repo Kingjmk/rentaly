@@ -1,5 +1,5 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
-import * as AuthService from 'services/auth';
+import * as authService from 'services/auth';
 import {parseErrors} from 'services/api';
 import Storage, {StorageKeys} from 'services/storage';
 
@@ -13,7 +13,7 @@ const initialState = {
 export const register = createAsyncThunk(
   'auth/register', async (payload, thunkAPI) => {
     try {
-      const res = await AuthService.register(payload);
+      const res = await authService.register(payload);
       return res.data;
     } catch (e) {
       return thunkAPI.rejectWithValue(parseErrors(e));
@@ -24,7 +24,7 @@ export const register = createAsyncThunk(
 export const login = createAsyncThunk(
   'auth/login', async ({email, password}, thunkAPI) => {
     try {
-      const res = await AuthService.login({email, password});
+      const res = await authService.login({email, password});
       return res.data;
     } catch (e) {
       return thunkAPI.rejectWithValue(parseErrors(e));
@@ -36,7 +36,7 @@ export const tryAuthenticate = createAsyncThunk(
   'auth/tryAuthenticate', async (payload, thunkAPI) => {
     try {
       const token = Storage.get(StorageKeys.TOKEN);
-      const res = await AuthService.checkStatusGivenToken(token);
+      const res = await authService.checkStatusGivenToken(token);
       return {token, user: res.data};
     } catch (e) {
       console.warn(e);
@@ -48,7 +48,7 @@ export const tryAuthenticate = createAsyncThunk(
 export const logout = createAsyncThunk(
   'auth/logout', async (payload, thunkAPI) => {
     try {
-      return await AuthService.logout();
+      return await authService.logout();
     } catch (e) {
       return thunkAPI.rejectWithValue(parseErrors(e));
     }

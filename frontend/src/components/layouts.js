@@ -49,7 +49,7 @@ const UserButtons = () => {
   }
 }
 
-export const DefaultAppBar = () => (
+export const DefaultAppBar = ({maxWidth = 'xl'}) => (
   <AppBar
     position='static'
     color='inherit'
@@ -57,7 +57,7 @@ export const DefaultAppBar = () => (
     elevation={0}
     sx={{borderBottom: (theme) => `1px solid ${theme.palette.divider}`}}
   >
-    <Container maxWidth="xl">
+    <Container maxWidth={maxWidth}>
       <Toolbar sx={{flexWrap: 'wrap'}}>
         <Typography variant='h6' color='inherit' noWrap sx={{flexGrow: 1}}>
           {constants.WEBSITE_NAME}

@@ -1,7 +1,6 @@
 import React from 'react';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
-  Avatar, TextField, Link, Grid, Typography, Container, Card, CardContent,
+  TextField, Link, Grid, Typography, Container, Card, CardContent,
 } from '@mui/material';
 import {LoadingButton} from '@mui/lab';
 import {Link as RouterLink} from 'react-router-dom';
@@ -15,19 +14,19 @@ import {login} from 'store/auth/authenticationSlice';
 class Page extends React.Component {
   constructor(props) {
     super(props);
-    this.navigate = this.props.navigate;
     this.state = {
       success: false,
     }
 
     this.renderForm = this.renderForm.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleSuccess = async () => {
     this.setState(state => state.success = true);
     setTimeout(() => {
       // wait before redirecting to login to leave time for the user to read the message
-      this.navigate('/dashboard');
+      this.props.navigate('/dashboard');
     }, 1000);
   }
 
@@ -40,7 +39,7 @@ class Page extends React.Component {
     return await this.props.dispatch(login(submitData)).unwrap();
   };
 
-  renderForm({loading, errors}) {
+  renderForm({loading, errors}, handleSubmit) {
     return (
       <React.Fragment>
         <SuccessAlert fullWidth isSuccessful={this.state.success} message={'Login Successful, Redirecting...'}/>
@@ -72,7 +71,8 @@ class Page extends React.Component {
         />
         <LoadingButton
           loading={loading || this.state.success}
-          type="submit"
+          type="button"
+          onClick={handleSubmit}
           fullWidth
           variant="contained"
           sx={{mt: 2, mb: 2}}
@@ -101,9 +101,6 @@ class Page extends React.Component {
         }}>
           <Card variant="outlined">
             <CardContent sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <Avatar sx={{m: 1, bgcolor: 'secondary.main'}}>
-                <LockOutlinedIcon/>
-              </Avatar>
               <Typography component="h1" variant="h5">
                 Sign in
               </Typography>

@@ -7,7 +7,7 @@ class Apartment(models.Model):
     description = models.TextField(db_index=True)
     floor = models.PositiveSmallIntegerField(db_index=True)
     area_size = models.PositiveIntegerField(db_index=True)
-    price_per_month = models.DecimalField(max_digits=11, decimal_places=7, db_index=True)
+    price_per_month = models.DecimalField(max_digits=11, decimal_places=3, db_index=True)
     number_of_rooms = models.PositiveSmallIntegerField(db_index=True)
 
     latitude = models.DecimalField(max_digits=11, decimal_places=7, null=True, blank=True)

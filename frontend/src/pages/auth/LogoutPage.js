@@ -7,7 +7,6 @@ import LoadingPage from 'pages/LoadingPage';
 class Page extends React.Component {
   constructor(props) {
     super(props);
-    this.navigate = this.props.navigate;
     this.state = {loading: false};
   }
 
@@ -16,7 +15,7 @@ class Page extends React.Component {
       this.setState({loading: true});
 
       await this.props.dispatch(logout({})).unwrap();
-      this.navigate('/dashboard');
+      this.props.navigate('/dashboard');
       this.setState({
         loading: false,
       });

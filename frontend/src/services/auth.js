@@ -31,9 +31,11 @@ export const checkStatusGivenToken = async (token) => {
   return await api.get(url, null);
 }
 
-export default {
+const authService = {
   register,
   login,
   logout,
   checkStatusGivenToken,
 }
+
+export default authService;

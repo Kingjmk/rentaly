@@ -12,12 +12,14 @@ export default class ReactiveForm extends React.Component {
     onSuccess: PropTypes.func.isRequired,
     onFailure: PropTypes.func,
     render: PropTypes.func.isRequired,
+    enableEnterSubmit: PropTypes.bool,
   }
 
   static defaultProps = {
     onSubmit: async () => {},
     onSuccess: async () => {},
     onFailure: async () => {},
+    enableEnterSubmit: true,
   }
 
   constructor(props) {
@@ -25,9 +27,10 @@ export default class ReactiveForm extends React.Component {
     this.onSubmit = this.props.onSubmit;
     this.onSuccess = this.props.onSuccess;
     this.onFailure = this.props.onFailure;
+    this.enableEnterSubmit = this.props.enableEnterSubmit;
 
     this.handleSubmit = this.handleSubmit.bind(this);
-
+    this.formRef = React.createRef();
     this.state = {
       loading: false,
       errors: [],
@@ -35,12 +38,18 @@ export default class ReactiveForm extends React.Component {
   }
 
   getFormData(event) {
-    return Array.prototype.slice.call(event.target)
+    return Array.prototype.slice.call(this.formRef.current)
       .filter(el => el.name)
       .reduce((form, el) => ({
         ...form,
         [el.name]: el.value,
       }), {});
+  }
+
+  onKeyDown = async (event) => {
+    if (event.key === 'Enter' && this.enableEnterSubmit) {
+      await this.handleSubmit(event);
+    }
   }
 
   handleSubmit = async (event) => {
@@ -78,9 +87,9 @@ export default class ReactiveForm extends React.Component {
 
   render() {
     return (
-      <Box component="form" onSubmit={this.handleSubmit} noValidate sx={{mt: 1}}>
+      <Box component="form" noValidate sx={{mt: 1}} ref={this.formRef} onKeyDown={this.onKeyDown}>
         <ErrorAlert error={this.state.errors?.non_field_errors}/>
-        {this.props.render(this.state)}
+        {this.props.render(this.state, this.handleSubmit)}
       </Box>
     )
   }

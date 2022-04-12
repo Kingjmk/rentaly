@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  TextField, Typography, Box, Grid, Card, CardMedia, CardContent, CardActions, Button, CircularProgress,
+  TextField, Typography, Box, Grid, Card, CardMedia, CardContent, CardActions, Button, CircularProgress, InputAdornment,
 } from '@mui/material';
 import {LoadingButton, Masonry} from '@mui/lab';
 import {PlainLayout, DefaultAppBar} from 'components/layouts';
@@ -12,8 +12,8 @@ import apartmentService from 'services/apartments';
 import ApartmentPlaceholderImg from 'assets/apartment_placeholder.png';
 
 
-const ImageComponent = ({images}) => {
-  if (images.length === 0) {
+const ImageComponent = ({image_url}) => {
+  if (!image_url) {
     return (
       <CardMedia
         component="img"
@@ -29,7 +29,7 @@ const ImageComponent = ({images}) => {
       component="img"
       alt="apartment house"
       height="200"
-      image={`${images[0].image_url}`}
+      image={`${image_url}`}
     />
   );
 }
@@ -69,7 +69,7 @@ const ItemsComponent = ({loading, itemList}) => {
     <Masonry columns={{md: 1, lg: 2}} spacing={2} defaultHeight={450} sx={{m: 0}}>
       {itemList.map((item, index) => (
         <Card key={index}>
-          <ImageComponent images={item.images}/>
+          <ImageComponent image_url={item.image_url}/>
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
               {item.name}
@@ -175,6 +175,9 @@ export default class MapPage extends React.Component {
           size="small"
           sx={{mr: 2}}
           onChange={(event) => this.setFilterValue('area_size', event.target.value)}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">m²</InputAdornment>,
+          }}
         />
         <TextField
           defaultValue={this.state.filters.price_per_month}
@@ -182,6 +185,9 @@ export default class MapPage extends React.Component {
           size="small"
           sx={{mr: 2}}
           onChange={(event) => this.setFilterValue('price_per_month', event.target.value)}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          }}
         />
         <TextField
           defaultValue={this.state.filters.number_of_rooms}
@@ -189,6 +195,9 @@ export default class MapPage extends React.Component {
           size="small"
           sx={{mr: 2}}
           onChange={(event) => this.setFilterValue('number_of_rooms', event.target.value)}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">#</InputAdornment>,
+          }}
         />
         <Box sx={{display: 'flex', justifyContent: 'end', alignItems: 'center'}}>
           <LoadingButton loading={this.state.loading} color="primary" variant='contained' onClick={() => this.loadItems()}>
@@ -204,7 +213,7 @@ export default class MapPage extends React.Component {
       <PlainLayout>
         <DefaultAppBar maxWidth={'none'}/>
         <Box backgroundColor={'white'} sx={{p: 1}}>
-          <Typography variant='h6' color='inherit' noWrap style={{my: 3}}>
+          <Typography variant='h6' color='inherit' noWrap sx={{mb: 2}}>
             Apartments in the area
           </Typography>
           <this.renderFilterForm/>

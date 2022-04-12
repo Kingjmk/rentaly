@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import 'styles/index.css';
 import 'leaflet/dist/leaflet';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
 import {Provider} from 'react-redux'
 import store from 'utils/store';
 
@@ -13,15 +12,10 @@ const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
 
 root.render(
-  <React.StrictMode>
+  <React.Fragment>
     {/*Redux Provider is included access the store values from anywhere inside the child components.*/}
     <Provider store={store()}>
       <App/>
     </Provider>
-  </React.StrictMode>
+  </React.Fragment>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

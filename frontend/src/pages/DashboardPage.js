@@ -6,7 +6,6 @@ import constants from 'utils/constants';
 export default class DashboardPage extends React.Component {
   constructor(props) {
     super(props);
-    this.navigate = this.props.navigate;
     this.state = {
       address: null,
     };
@@ -14,7 +13,7 @@ export default class DashboardPage extends React.Component {
 
   handleSubmit() {
     // redirect to map page
-    this.navigate({
+    this.props.navigate({
       pathname: '/map',
       search: `?address=${this.state.address || ''}`,
     });

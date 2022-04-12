@@ -6,6 +6,7 @@ import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {Link as RouterLink} from 'react-router-dom';
 import {useSelector} from 'react-redux'
 import constants from 'utils/constants';
+import {routes} from 'routes';
 import UserMenu from './UserMenu';
 
 const theme = createTheme({
@@ -16,7 +17,39 @@ const theme = createTheme({
   },
 });
 
-const navbarItems = [];
+const navbarItems = [
+  routes.apartments,
+];
+
+const NavbarItems = ({isAuthenticated, user}) => {
+  const items = [];
+
+  for (const {roles, path, label} of navbarItems) {
+    if (!isAuthenticated || roles.includes(user.roles)) continue;
+
+    items.push({
+      href: path,
+      label: label,
+    })
+  }
+
+  return (
+    <nav>
+      {items.map(({href, label}, index) => (
+        <Link
+          key={index}
+          variant='button'
+          color='text.primary'
+          component={RouterLink}
+          to={href}
+          sx={{my: 1, mx: 1.5}}
+          style={{textDecoration: 'none'}}
+        >{label}</Link>
+      ))}
+    </nav>
+  );
+};
+
 
 const Copyright = (props) => (
   <Typography variant='body2' color='text.secondary' align='center' {...props}>
@@ -34,6 +67,7 @@ const UserButtons = () => {
   if (!isAuthenticated) {
     return (
       <React.Fragment>
+        <NavbarItems isAuthenticated={isAuthenticated} user={user}/>
         <Button component={RouterLink} to={'/login'} color='primary' sx={{my: 1, mx: 1.5}}>
           Login
         </Button>
@@ -41,39 +75,32 @@ const UserButtons = () => {
           Register
         </Button>
       </React.Fragment>
-    )
-  } else {
-    return (
-      <UserMenu user={user}/>
-    )
+    );
   }
+
+  return (
+    <React.Fragment>
+      <NavbarItems isAuthenticated={isAuthenticated} user={user}/>
+      <UserMenu user={user}/>
+    </React.Fragment>
+  );
 }
 
 export const DefaultAppBar = ({maxWidth = 'xl'}) => (
   <AppBar
     position='static'
     color='inherit'
-    style={{backgroundColor:'#fff'}}
+    style={{backgroundColor:'white'}}
     elevation={0}
     sx={{borderBottom: (theme) => `1px solid ${theme.palette.divider}`}}
   >
     <Container maxWidth={maxWidth}>
       <Toolbar sx={{flexWrap: 'wrap'}}>
-        <Typography variant='h6' color='inherit' noWrap sx={{flexGrow: 1}}>
-          {constants.WEBSITE_NAME}
-        </Typography>
-        <nav>
-          {navbarItems.map(({href, label}, index) => (
-            <Link
-              key={index}
-              variant='button'
-              color='text.primary'
-              component={RouterLink}
-              to={href}
-              sx={{my: 1, mx: 1.5}}
-            >{label}</Link>
-          ))}
-        </nav>
+        <Box sx={{flexGrow: 1}}>
+          <Typography component={RouterLink} to={'/dashboard'} variant='h6' color='inherit' noWrap style={{textDecoration: 'none'}}>
+            {constants.WEBSITE_NAME}
+          </Typography>
+        </Box>
         <UserButtons/>
       </Toolbar>
     </Container>

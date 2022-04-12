@@ -7,3 +7,4 @@ redis==4.2.2
 django-revproxy-verteva==0.10.0
 django-filter==21.1
 Pillow==9.1.0
+requests==2.27.1

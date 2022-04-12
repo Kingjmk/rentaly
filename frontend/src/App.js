@@ -1,19 +1,21 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, Suspense} from 'react';
 import {
   BrowserRouter,
   Routes,
   Route,
 } from 'react-router-dom';
 import {useSelector, useDispatch} from 'react-redux'
-import routes, {AuthenticateRoute} from 'routes';
+import {routes, AuthenticateRoute} from 'routes';
 import LoadingPage from 'pages/LoadingPage';
 import {appInitActions} from 'store/init';
 
 
 const App = () => {
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state) => state.authentication.isAuthenticated)
+  const {isAuthenticated, user: currentUser} = useSelector((state) => state.authentication)
   const [loading, setLoading] = useState(true);
+
+  const routesArray = Object.values(routes);
 
   useEffect(() => {
     (async () => {
@@ -27,11 +29,13 @@ const App = () => {
   if (loading) return (<LoadingPage />);
   return (
     <BrowserRouter>
-      <Routes>
-        {routes.map(({component: Component, path, exact, isPublic}, index) => (
-          <Route path={`/${path}`} key={index} element={<AuthenticateRoute isAuthenticated={isAuthenticated} isPublic={isPublic} component={Component}/>}/>
-        ))}
-      </Routes>
+      <Suspense fallback={<LoadingPage/>}>
+        <Routes>
+          {routesArray.map(({component: Component, path, exact, roles}, index) => (
+            <Route path={path} key={index} element={<AuthenticateRoute isAuthenticated={isAuthenticated} currentUser={currentUser} roles={roles} component={Component}/>}/>
+          ))}
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 };

@@ -1,11 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import 'styles/index.css';
+import 'styles/index.scss';
 import 'leaflet/dist/leaflet';
 import App from './App';
-import {Provider} from 'react-redux'
-import store from 'utils/store';
-
+import {ProviderWrapper} from 'store/init';
 
 const container = document.getElementById('root');
 
@@ -13,9 +11,8 @@ const root = ReactDOM.createRoot(container);
 
 root.render(
   <React.Fragment>
-    {/*Redux Provider is included access the store values from anywhere inside the child components.*/}
-    <Provider store={store()}>
+    <ProviderWrapper>
       <App/>
-    </Provider>
+    </ProviderWrapper>
   </React.Fragment>
 );

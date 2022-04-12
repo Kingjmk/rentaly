@@ -3,9 +3,9 @@ import {
   TextField, Container, Card, CardContent, Box, Typography, Grid, InputAdornment, FormHelperText,
 } from '@mui/material';
 import {LoadingButton} from '@mui/lab';
-import {DefaultLayout} from 'components/layouts';
+import {Breadcrumbs, DefaultLayout} from 'components/layouts';
 import ReactiveForm from 'components/ReactiveForm';
-import {getErrorMessage, hasError, SuccessAlert} from 'utils/forms';
+import {getErrorMessage, hasError} from 'utils/forms';
 import MapField from 'components/MapField';
 import constants from 'utils/constants';
 import apartmentService from 'services/apartments';
@@ -21,28 +21,31 @@ export default class ApartmentAddPage extends React.Component {
       location: constants.DEFAULT_COORDINATES,
     }
 
+    this.handleSuccess = this.handleSuccess.bind(this)
     this.renderForm = this.renderForm.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSuccess = async () => {
+  handleSuccess = async (data) => {
     this.setState(state => {
       state.success = true;
       return state;
     });
-
-    this.props.navigate(routes.apartments.path);
+    this.props.snackbar.enqueueSnackbar('Apartment added', {variant: 'success'});
+    this.props.navigate(`/apartments/${data.id}/edit`);
   }
 
   handleSubmit = async (event, data) => {
     try {
-      await apartmentService.create({
+      const res = await apartmentService.create({
         location: {
           latitude: this.state.location.lat,
           longitude: this.state.location.lng,
         },
         ...data,
       });
+
+      return res.data;
     } catch (e) {
       throw parseErrors(e);
     }
@@ -51,7 +54,6 @@ export default class ApartmentAddPage extends React.Component {
   renderForm({loading, errors}, handleSubmit) {
     return (
       <React.Fragment>
-        <SuccessAlert fullWidth isSuccessful={this.state.success} message={'Apartment added!'}/>
         <Grid container columnSpacing={2}>
           <Grid item xs={6}>
             <TextField
@@ -142,7 +144,7 @@ export default class ApartmentAddPage extends React.Component {
           placeholder="Description and details about this apartment, this will appear under the detail page."
           name="description"
           multiline
-          rows={4}
+          rows={8}
           helperText={getErrorMessage(errors?.description)}
         />
         <Box>
@@ -169,6 +171,7 @@ export default class ApartmentAddPage extends React.Component {
     return (
       <DefaultLayout>
         <Container component="main" maxWidth="lg" sx={{mt: 2}}>
+          <Breadcrumbs items={[routes.dashboard, routes.apartments]} lastLabel={'Add'} />
           <Box sx={{mb: 2, display: 'flex', justifyContent: 'space-between'}}>
             <>
               <Typography component="h1" variant="h5">

@@ -1,11 +1,11 @@
 import React from 'react';
 import {DataGrid, GridActionsCellItem} from '@mui/x-data-grid';
 import {Paper, Container, Box, Typography, Button} from '@mui/material';
-import {DefaultLayout} from 'components/layouts';
+import {Breadcrumbs, DefaultLayout} from 'components/layouts';
 import apartmentService from 'services/apartments';
 import {Link as RouterLink} from 'react-router-dom';
 import {routes} from 'routes';
-import {ModeEditOutlineOutlined as EditIcon} from '@mui/icons-material';
+import {ModeEditOutlineOutlined as EditIcon, VisibilityOutlined as EyeIcon} from '@mui/icons-material';
 
 
 const columns = [
@@ -15,11 +15,13 @@ const columns = [
   {field: 'area_size', headerName: 'Area Size', flex: 1},
   {field: 'price_per_month', headerName: 'Price per month', type: 'number', flex: 1},
   {field: 'number_of_rooms', headerName: 'Number of rooms', type: 'number', flex: 1},
+  {field: 'created_on', headerName: 'Added on', type: 'datetime', flex: 1, valueGetter: ({value}) => value && new Date(value)},
   {
     field: 'actions',
     type: 'actions',
-    getActions: (params) => [
-      <GridActionsCellItem icon={<EditIcon />} component={RouterLink} to={`/apartments/${params.id}/edit`} label="Edit" />,
+    getActions: ({id}) => [
+      <GridActionsCellItem icon={<EditIcon />} component={RouterLink} to={`/apartments/${id}/edit`} label="Edit" />,
+      <GridActionsCellItem icon={<EyeIcon />} component={RouterLink} to={`/apartments/${id}/view`} label="See on website" />,
     ],
   },
 ];
@@ -70,7 +72,8 @@ export default class ApartmentListPage extends React.Component {
     return (
       <DefaultLayout>
         <Container component="main" maxWidth="lg" sx={{mt: 2}}>
-          <Box sx={{mb: 2, display: 'flex', justifyContent: 'space-between'}}>
+          <Breadcrumbs items={[routes.dashboard]} lastLabel={'Apartments'} />
+          <Box sx={{mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
             <>
               <Typography component="h1" variant="h5">
                 Apartments

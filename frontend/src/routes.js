@@ -1,6 +1,9 @@
 import React from 'react';
-import {Navigate, useNavigate, useLocation, useParams} from 'react-router-dom';
 import {UserRoles} from 'utils/common';
+import {Navigate, useLocation, useNavigate, useParams} from 'react-router-dom';
+import {useSnackbar} from 'notistack';
+import {useConfirm} from 'material-ui-confirm';
+
 export const IndexRedirect = () => (<Navigate to={'/dashboard'}/>);
 export const LoginRedirect = ({location}) => (<Navigate to={{pathname: '/login', state: {from: location}}}/>);
 
@@ -54,6 +57,13 @@ export const routes = {
     exact: true,
     roles: [UserRoles.ADMIN, UserRoles.REALTOR],
   },
+  apartment_detail: {
+    label: 'Edit Apartment',
+    path: '/apartments/:id/view',
+    component: React.lazy(() => import('pages/core/apartment/DetailPage')),
+    exact: true,
+    roles: [UserRoles.ADMIN, UserRoles.REALTOR, UserRoles.CLIENT],
+  },
   apartment_add: {
     label: 'New Apartment',
     path: '/apartments/add',
@@ -77,12 +87,16 @@ export const routes = {
   },
 };
 
-const RoutingComponent = ({component: Component}) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const params = useParams();
+const HookInjectorComponent = ({component: Component}) => {
+  const props = {
+    location: useLocation(),
+    navigate: useNavigate(),
+    params: useParams(),
+    snackbar: useSnackbar(),
+    confirm: useConfirm(),
+  }
 
-  return (<Component location={location} navigate={navigate} params={params} />)
+  return (<Component {...props} />)
 }
 
 export class AuthenticateRoute extends React.Component {
@@ -100,6 +114,6 @@ export class AuthenticateRoute extends React.Component {
       }
     }
 
-    return (<RoutingComponent component={component} />);
+    return (<HookInjectorComponent component={component} />);
   }
 }

@@ -1,4 +1,4 @@
-import api from 'services/api'
+import api, {getToken} from 'services/api'
 
 export const search = async ({query, page = 1, page_limit = 25}) => {
   const url = '/core/apartments/search';
@@ -9,8 +9,6 @@ export const search = async ({query, page = 1, page_limit = 25}) => {
       page,
       page_limit,
     },
-  }, {
-    headers: {},
   });
 }
 
@@ -39,6 +37,26 @@ export const create = async (data) => {
 }
 
 
+export const createImageDropzoneParams = ({apartmentId}, {file, meta}) => {
+  const url = `${api.defaults.baseURL}/core/apartments/images/create`;
+  const body = new FormData();
+
+  body.append('image', file);
+  body.append('apartment', apartmentId);
+
+  return {url, body, headers: {
+    Authorization: `Token ${getToken()}`,
+  }};
+}
+
+
+export const deleteImage = async (apartmentImageId) => {
+  const url = `/core/apartments/images/${apartmentImageId}/delete`;
+
+  return await api.delete(url);
+}
+
+
 export const update = async (id, data) => {
   const url = `/core/apartments/${id}/update`;
 
@@ -51,6 +69,8 @@ const apartmentService = {
   create,
   detail,
   update,
+  createImageDropzoneParams,
+  deleteImage,
 };
 
 export default apartmentService;

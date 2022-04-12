@@ -4,6 +4,7 @@ import {MapContainer, Marker, Popup, TileLayer} from 'react-leaflet'
 import constants from 'utils/constants';
 import {FmdGoodOutlined as PinIcon, PushPinOutlined as PushPinIcon} from '@mui/icons-material';
 import geocodeService from 'services/geocode';
+import PropTypes from 'prop-types';
 
 
 const DraggableMarker = React.forwardRef(({initialPosition, onChange}, ref) => {
@@ -55,14 +56,26 @@ const TopRightControl = ({onSetMarker, onFlyTo, onSearch}) => (
 );
 
 export default class MapField extends React.Component {
+  static propTypes = {
+    onChange: PropTypes.func,
+    center: PropTypes.object,
+    zoom: PropTypes.number,
+    sx: PropTypes.object,
+  }
+
+  static defaultProps = {
+    onChange: () => {},
+    center: constants.DEFAULT_COORDINATES,
+    zoom: 14,
+    sx: {},
+  }
+
   constructor(props) {
     super(props);
-
-    const center = props.center || constants.DEFAULT_COORDINATES;
     this.state = {
-      pinPosition: center,
-      center: center,
-      zoom: props.zoom || 14,
+      pinPosition: this.props.center,
+      center: this.props.center,
+      zoom: this.props.zoom,
     }
 
     this.mapRef = React.createRef();
@@ -102,7 +115,7 @@ export default class MapField extends React.Component {
       <Box sx={this.props.sx}>
         <MapContainer center={this.state.center} zoom={this.state.zoom} style={{height: '50vh', width: '100%'}}>
           <TileLayer
-            attribution={`&copy; ${constants.WEBSITE_NAME}`}
+            attribution={constants.TILE_ATTRIBUTION}
             url={constants.TILE_LAYER_URL}
             ref={this.mapRef}
             on

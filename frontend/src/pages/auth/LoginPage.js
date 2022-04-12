@@ -7,7 +7,7 @@ import {Link as RouterLink} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {PlainLayout} from 'components/layouts';
 import ReactiveForm from 'components/ReactiveForm';
-import {getErrorMessage, hasError, SuccessAlert} from 'utils/forms';
+import {getErrorMessage, hasError} from 'utils/forms';
 import {login} from 'store/auth/authenticationSlice';
 
 
@@ -24,6 +24,8 @@ class Page extends React.Component {
 
   handleSuccess = async () => {
     this.setState(state => state.success = true);
+    this.props.snackbar.enqueueSnackbar('Login Successful, Redirecting...', {variant: 'success'});
+
     setTimeout(() => {
       // wait before redirecting to login to leave time for the user to read the message
       this.props.navigate('/dashboard');
@@ -42,7 +44,6 @@ class Page extends React.Component {
   renderForm({loading, errors}, handleSubmit) {
     return (
       <React.Fragment>
-        <SuccessAlert fullWidth isSuccessful={this.state.success} message={'Login Successful, Redirecting...'}/>
         <TextField
           error={hasError(errors?.email)}
           margin="normal"

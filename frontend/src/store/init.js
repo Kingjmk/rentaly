@@ -1,5 +1,10 @@
+import React from 'react';
 import {tryAuthenticate} from 'store/auth/authenticationSlice';
+import {Provider} from 'react-redux'
+import {SnackbarProvider} from 'notistack';
+import {ConfirmProvider} from 'material-ui-confirm';
 import L from 'leaflet';
+import store from 'utils/store';
 
 
 export const appInitActions = async (dispatch) => {
@@ -13,3 +18,13 @@ export const appInitActions = async (dispatch) => {
   });
 
 };
+
+export const ProviderWrapper = ({children}) => (
+  <Provider store={store()}>
+    <ConfirmProvider>
+      <SnackbarProvider>
+        {children}
+      </SnackbarProvider>
+    </ConfirmProvider>
+  </Provider>
+);

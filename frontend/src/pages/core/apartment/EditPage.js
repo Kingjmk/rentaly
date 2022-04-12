@@ -3,15 +3,16 @@ import {
   TextField, Container, Card, CardContent, Box, Typography, Grid, InputAdornment, FormHelperText,
 } from '@mui/material';
 import {LoadingButton} from '@mui/lab';
-import {DefaultLayout} from 'components/layouts';
+import {Breadcrumbs, DefaultLayout} from 'components/layouts';
 import ReactiveForm from 'components/ReactiveForm';
-import {getErrorMessage, hasError, SuccessAlert} from 'utils/forms';
+import {getErrorMessage, hasError} from 'utils/forms';
 import MapField from 'components/MapField';
+import ImagesUploader from 'components/ImagesUploader';
 import constants from 'utils/constants';
 import LoadingPage from 'pages/LoadingPage';
 import apartmentService from 'services/apartments';
 import {parseErrors} from 'services/api';
-
+import {routes} from 'routes';
 
 export default class ApartmentEditPage extends React.Component {
   constructor(props) {
@@ -19,7 +20,6 @@ export default class ApartmentEditPage extends React.Component {
     this.apartmentId = props.params.id;
 
     this.state = {
-      success: false,
       loading: true,
       originalObject: null,
       location: constants.DEFAULT_COORDINATES,
@@ -30,17 +30,7 @@ export default class ApartmentEditPage extends React.Component {
   }
 
   handleSuccess = async () => {
-    this.setState(state => {
-      state.success = true;
-      return state;
-    });
-
-    setTimeout(() => {
-      this.setState(state => {
-        state.success = false;
-        return state;
-      });
-    }, 1500);
+    this.props.snackbar.enqueueSnackbar('Apartment added', {variant: 'success'});
   }
 
   handleSubmit = async (event, data) => {
@@ -83,7 +73,6 @@ export default class ApartmentEditPage extends React.Component {
   renderForm({loading, errors}, handleSubmit) {
     return (
       <React.Fragment>
-        <SuccessAlert fullWidth isSuccessful={this.state.success} message={'Apartment saved!'}/>
         <Grid container columnSpacing={2}>
           <Grid item xs={6}>
             <TextField
@@ -180,7 +169,7 @@ export default class ApartmentEditPage extends React.Component {
           placeholder="Description and details about this apartment, this will appear under the detail page."
           name="description"
           multiline
-          rows={4}
+          rows={8}
           helperText={getErrorMessage(errors?.description)}
         />
         <Box>
@@ -191,7 +180,7 @@ export default class ApartmentEditPage extends React.Component {
           <FormHelperText error={true}>{getErrorMessage(errors?.location)}</FormHelperText>
         </Box>
         <LoadingButton
-          loading={loading || this.state.success}
+          loading={loading}
           type="button"
           onClick={handleSubmit}
           fullWidth
@@ -212,6 +201,7 @@ export default class ApartmentEditPage extends React.Component {
     return (
       <DefaultLayout>
         <Container component="main" maxWidth="lg" sx={{mt: 2}}>
+          <Breadcrumbs items={[routes.dashboard, routes.apartments]} lastLabel={'Edit'} />
           <Box sx={{mb: 2, display: 'flex', justifyContent: 'space-between'}}>
             <>
               <Typography component="h1" variant="h5">
@@ -222,6 +212,11 @@ export default class ApartmentEditPage extends React.Component {
           <Card variant="outlined">
             <CardContent sx={{py: 0}}>
               <ReactiveForm enableEnterSubmit={false} onSubmit={this.handleSubmit} onSuccess={this.handleSuccess} render={this.renderForm}/>
+            </CardContent>
+          </Card>
+          <Card variant="outlined" sx={{mt: 5}}>
+            <CardContent sx={{py: 0}}>
+              <ImagesUploader apartmentId={this.state.originalObject.id} items={this.state.originalObject.images} snackbar={this.props.snackbar} confirm={this.props.confirm}/>
             </CardContent>
           </Card>
         </Container>

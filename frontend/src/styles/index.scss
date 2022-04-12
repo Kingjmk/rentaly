@@ -1,0 +1,60 @@
+@import 'leaflet/dist/leaflet.css';
+@import 'react-dropzone-uploader/dist/styles.css';
+$ig-blue: white !default;
+@import 'react-image-gallery/styles/scss/image-gallery.scss';
+
+
+body div#root {
+    height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    -webkit-transform: translate3d(0, 0, 0);
+}
+
+/* Dropzone styles */
+.dzu-dropzone {
+    overflow: auto;
+
+    .dzu-previewContainer {
+        padding: 1rem;
+    }
+
+    .dzu-previewStatusContainer {
+        padding-left: 1rem;
+        flex-grow: 1;
+
+        progress {
+            width: 100%;
+            height: 20px;
+        }
+    }
+
+    .dzu-inputLabelWithFiles {
+        margin-bottom: 20px;
+    }
+
+    .dzu-previewImage {
+        max-height: 160px;
+        max-width: 560px;
+    }
+}
+/* end of dropzone styles */
+
+
+/* gallery styles */
+.image-gallery {
+    .image-gallery-thumbnail.active, .image-gallery-thumbnail:focus {
+        border: 2px solid $ig-blue;
+        border-radius: 5px;
+    }
+    .image-gallery-slides {
+        border-radius: 5px;
+        background: black;
+    }
+}
+
+/* end of dropzone styles */

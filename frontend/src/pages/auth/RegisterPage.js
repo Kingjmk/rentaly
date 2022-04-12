@@ -8,7 +8,7 @@ import {connect} from 'react-redux';
 import {Link as RouterLink} from 'react-router-dom';
 import {PlainLayout} from 'components/layouts';
 import ReactiveForm from 'components/ReactiveForm';
-import {getErrorMessage, hasError, SuccessAlert} from 'utils/forms';
+import {getErrorMessage, hasError} from 'utils/forms';
 import {register} from 'store/auth/authenticationSlice';
 import {UserRoles} from 'utils/common';
 
@@ -25,6 +25,7 @@ class Page extends React.Component {
 
   handleSuccess = async () => {
     this.setState(state => state.success = true);
+    this.props.snackbar.enqueueSnackbar('Registration successful, redirecting to login now...', {variant: 'success'});
     setTimeout(() => {
       // wait before redirecting to login to leave time for the user to read the message
       this.props.navigate('/login');
@@ -44,7 +45,6 @@ class Page extends React.Component {
   renderForm({loading, errors}, handleSubmit) {
     return (
       <React.Fragment>
-        <SuccessAlert isSuccessful={this.state.success} message={'Registration Successful, Please login now...'}/>
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <TextField

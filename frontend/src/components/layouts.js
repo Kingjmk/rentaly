@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  AppBar, Button, CssBaseline, Toolbar, Typography, Link, GlobalStyles, Container, Box,
+  AppBar, Button, CssBaseline, Toolbar, Typography, Link, GlobalStyles, Container, Box, Breadcrumbs as MuiBreadcrumbs,
 } from '@mui/material';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {Link as RouterLink} from 'react-router-dom';
@@ -28,20 +28,20 @@ const NavbarItems = ({isAuthenticated, user}) => {
     if (!isAuthenticated || roles.includes(user.roles)) continue;
 
     items.push({
-      href: path,
+      path: path,
       label: label,
     })
   }
 
   return (
     <nav>
-      {items.map(({href, label}, index) => (
+      {items.map(({path, label}, index) => (
         <Link
           key={index}
           variant='button'
           color='text.primary'
           component={RouterLink}
-          to={href}
+          to={path}
           sx={{my: 1, mx: 1.5}}
           style={{textDecoration: 'none'}}
         >{label}</Link>
@@ -85,6 +85,16 @@ const UserButtons = () => {
     </React.Fragment>
   );
 }
+
+
+export const Breadcrumbs = ({items, lastLabel, sx = {my: 1}}) => (
+  <MuiBreadcrumbs separator="›" aria-label="breadcrumb" sx={sx}>
+    {items.map(({path, label}, index) => (
+      <Link key={index} underline="hover" color="inherit" component={RouterLink} to={path}>{label}</Link>
+    ))}
+    <Typography color="text.primary">{lastLabel}</Typography>
+  </MuiBreadcrumbs>
+)
 
 export const DefaultAppBar = ({maxWidth = 'xl'}) => (
   <AppBar

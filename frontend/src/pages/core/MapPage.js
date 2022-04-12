@@ -10,29 +10,18 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import apartmentService from 'services/apartments';
 import ApartmentPlaceholderImg from 'assets/apartment_placeholder.png';
+import {Link as RouterLink} from 'react-router-dom';
 
 
-const ImageComponent = ({image_url}) => {
-  if (!image_url) {
-    return (
-      <CardMedia
-        component="img"
-        alt="apartment image"
-        height="200"
-        image={ApartmentPlaceholderImg}
-      />
-    )
-  }
+const ImageComponent = ({image_url: image = ApartmentPlaceholderImg}) => (
+  <CardMedia
+    component="img"
+    alt="apartment image"
+    height="200"
+    image={image}
+  />
+);
 
-  return (
-    <CardMedia
-      component="img"
-      alt="apartment house"
-      height="200"
-      image={`${image_url}`}
-    />
-  );
-}
 
 const ItemsComponent = ({loading, itemList}) => {
   if (loading) {
@@ -75,11 +64,11 @@ const ItemsComponent = ({loading, itemList}) => {
               {item.name}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {item.name}
+              ${item.price_per_month}
             </Typography>
           </CardContent>
           <CardActions>
-            <Button size="small">Learn More</Button>
+            <Button component={RouterLink} to={`/apartments/${item.id}/view`} label="See on website" size="small">Learn More</Button>
           </CardActions>
         </Card>
       ))}
@@ -102,7 +91,7 @@ class MapComponent extends React.Component {
       <Box sx={this.props.sx}>
         <MapContainer center={this.state.center} zoom={this.state.zoom} style={{height: '100%', width: '100%'}}>
           <TileLayer
-            attribution={`&copy; ${constants.WEBSITE_NAME}`}
+            attribution={constants.TILE_ATTRIBUTION}
             url={constants.TILE_LAYER_URL}
           />
         </MapContainer>
@@ -218,7 +207,7 @@ export default class MapPage extends React.Component {
           </Typography>
           <this.renderFilterForm/>
         </Box>
-        <Box sx={{display: 'flex', flexGrow: 1, maxHeight: 'calc(100vh - 153px)'}}>
+        <Box sx={{display: 'flex', flexGrow: 1, maxHeight: 'calc(100vh - 169px)'}}>
           <MapComponent sx={{flexGrow: 1, width: '100%'}}/>
           <Box sx={{width: '50%', maxHeight: '100%', overflowY: 'auto'}}>
             <ItemsComponent loading={this.state.loading} itemList={this.state.itemList}/>

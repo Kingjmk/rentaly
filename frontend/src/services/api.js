@@ -11,8 +11,10 @@ api.defaults.headers = constants.API_HEADERS;
 // To share cookies to cross site domain, change to true.
 api.defaults.withCredentials = false;
 
+export const getToken = () => Storage.get(StorageKeys.TOKEN) || null;
+
 api.interceptors.request.use((config) => {
-  const token = Storage.get(StorageKeys.TOKEN) || null;
+  const token = getToken();
   if (!token) return config;
   config.headers.Authorization = `Token ${token}`;
   return config;

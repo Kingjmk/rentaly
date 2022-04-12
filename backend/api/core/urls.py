@@ -8,4 +8,7 @@ urlpatterns = [
     path('apartments/create', views.ApartmentCreateView.as_view()),
     path('apartments/<int:pk>', views.ApartmentDetailView.as_view()),
     path('apartments/<int:pk>/update', views.ApartmentUpdateView.as_view()),
+
+    path('apartments/images/create', views.ApartmentImageCreateView.as_view()),
+    path('apartments/images/<int:pk>/delete', views.ApartmentImageDeleteView.as_view()),
 ]

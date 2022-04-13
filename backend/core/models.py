@@ -2,6 +2,11 @@ from django.utils.translation import gettext_lazy as _
 from django.db import models
 
 
+class ApartmentStates(models.TextChoices):
+    AVAILABLE = 'A', _('Available')
+    RENTED = 'R', _('RENTED')
+
+
 class Apartment(models.Model):
     name = models.CharField(max_length=128, db_index=True)
     description = models.TextField(db_index=True)
@@ -9,7 +14,7 @@ class Apartment(models.Model):
     area_size = models.PositiveIntegerField(db_index=True)
     price_per_month = models.DecimalField(max_digits=11, decimal_places=3, db_index=True)
     number_of_rooms = models.PositiveSmallIntegerField(db_index=True)
-
+    state = models.CharField(choices=ApartmentStates.choices, default=ApartmentStates.AVAILABLE,  max_length=1, db_index=True)
     latitude = models.DecimalField(max_digits=11, decimal_places=7, null=True, blank=True)
     longitude = models.DecimalField(max_digits=11, decimal_places=7, null=True, blank=True)
 

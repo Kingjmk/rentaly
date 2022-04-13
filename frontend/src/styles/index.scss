@@ -10,6 +10,7 @@ body div#root {
     position: absolute;
     top: 0;
     left: 0;
+    overflow-y: overlay;
     -webkit-transform: translate3d(0, 0, 0);
 }
 

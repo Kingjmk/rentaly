@@ -8,13 +8,10 @@ export const locate = async (address) => {
       params: {address},
     });
 
-    const data = res.data.data;
+    const data = res.data;
 
     if (data.length === 0) return null;
-    return {
-      lat: data[0].latitude,
-      lng: data[0].longitude,
-    };
+    return data[0];
   } catch (e) {
     // TODO: report error
     return null;

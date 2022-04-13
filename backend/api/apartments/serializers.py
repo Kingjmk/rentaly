@@ -1,8 +1,7 @@
 from django.core.validators import validate_image_file_extension
 from rest_framework import serializers
-import core.models
 from api.utils import PointField
-import mimetypes
+import core.models
 
 
 class SearchSerializer(serializers.ModelSerializer):
@@ -19,7 +18,7 @@ class SearchSerializer(serializers.ModelSerializer):
         model = core.models.Apartment
         fields = [
             'id', 'name', 'floor', 'area_size', 'price_per_month', 'number_of_rooms',
-            'latitude', 'longitude', 'image_url',
+            'latitude', 'longitude', 'image_url', 'state',
         ]
 
 
@@ -47,7 +46,7 @@ class ListDetailApartmentSerializer(serializers.ModelSerializer):
         model = core.models.Apartment
         fields = [
             'id', 'name', 'description', 'floor', 'area_size', 'price_per_month', 'number_of_rooms',
-            'latitude', 'longitude', 'images', 'created_on'
+            'latitude', 'longitude', 'images', 'created_on', 'state',
         ]
 
 
@@ -57,7 +56,7 @@ class EditApartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = core.models.Apartment
         fields = [
-            'id', 'name', 'description', 'floor', 'area_size', 'price_per_month', 'number_of_rooms', 'location',
+            'id', 'name', 'description', 'floor', 'area_size', 'price_per_month', 'number_of_rooms', 'location', 'state',
         ]
 
     def validate(self, attrs):

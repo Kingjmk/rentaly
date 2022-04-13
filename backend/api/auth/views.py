@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
-from rest_framework import generics
-from rest_framework.response import Response
+from rest_framework import generics, response
 from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_200_OK
 from utils import generate_error_response
 from . import serializers
@@ -24,10 +23,10 @@ class LoginView(generics.GenericAPIView):
         )
 
         if not user:
-            return Response(generate_error_response('Invalid credentials'), status=HTTP_400_BAD_REQUEST)
+            return response.Response(generate_error_response('Invalid credentials'), status=HTTP_400_BAD_REQUEST)
 
         if not user.is_active:
-            return Response(generate_error_response('Invalid user'), status=HTTP_400_BAD_REQUEST)
+            return response.Response(generate_error_response('Invalid user'), status=HTTP_400_BAD_REQUEST)
 
         token, _ = Token.objects.get_or_create(user=user)
 
@@ -36,7 +35,7 @@ class LoginView(generics.GenericAPIView):
             'user': serializers.UserSerializer(user).data
         }
 
-        return Response(data, status=HTTP_200_OK)
+        return response.Response(data, status=HTTP_200_OK)
 
 
 class LogoutView(generics.GenericAPIView):
@@ -44,7 +43,7 @@ class LogoutView(generics.GenericAPIView):
 
     def post(self, request):
         Token.objects.filter(user_id=self.request.user.pk).delete()
-        return Response(status=HTTP_204_NO_CONTENT)
+        return response.Response(status=HTTP_204_NO_CONTENT)
 
 
 class StatusView(generics.RetrieveAPIView):
@@ -65,4 +64,4 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
-        return Response(self.detail_serializer_class(instance).data, status=HTTP_201_CREATED)
+        return response.Response(self.detail_serializer_class(instance).data, status=HTTP_201_CREATED)

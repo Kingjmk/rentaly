@@ -18,6 +18,7 @@ const theme = createTheme({
 });
 
 const navbarItems = [
+  routes.users,
   routes.apartments,
 ];
 

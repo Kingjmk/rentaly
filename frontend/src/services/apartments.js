@@ -1,7 +1,7 @@
 import api, {getToken} from 'services/api'
 
 export const search = async ({query, page = 1, page_limit = 25}) => {
-  const url = '/core/apartments/search';
+  const url = '/apartments/search';
 
   return await api.get(url, {
     params: {
@@ -13,7 +13,7 @@ export const search = async ({query, page = 1, page_limit = 25}) => {
 }
 
 export const list = async ({query, page = 1, page_limit = 25}) => {
-  const url = '/core/apartments/list';
+  const url = '/apartments/list';
 
   return await api.get(url, {
     params: {
@@ -25,20 +25,20 @@ export const list = async ({query, page = 1, page_limit = 25}) => {
 }
 
 export const detail = async (id) => {
-  const url = `/core/apartments/${id}`;
+  const url = `/apartments/${id}`;
 
   return await api.get(url);
 }
 
 export const create = async (data) => {
-  const url = '/core/apartments/create';
+  const url = '/apartments/create';
 
   return await api.post(url, data);
 }
 
 
 export const createImageDropzoneParams = ({apartmentId}, {file, meta}) => {
-  const url = `${api.defaults.baseURL}/core/apartments/images/create`;
+  const url = `${api.defaults.baseURL}/apartments/images/create`;
   const body = new FormData();
 
   body.append('image', file);
@@ -51,14 +51,14 @@ export const createImageDropzoneParams = ({apartmentId}, {file, meta}) => {
 
 
 export const deleteImage = async (apartmentImageId) => {
-  const url = `/core/apartments/images/${apartmentImageId}/delete`;
+  const url = `/apartments/images/${apartmentImageId}/delete`;
 
   return await api.delete(url);
 }
 
 
 export const update = async (id, data) => {
-  const url = `/core/apartments/${id}/update`;
+  const url = `/apartments/${id}/update`;
 
   return await api.put(url, data);
 }

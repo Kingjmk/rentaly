@@ -1,14 +1,50 @@
 import React from 'react';
-import {Container, Card, CardContent, Box, Typography, Divider, Grid} from '@mui/material';
+import {Container, Card, CardContent, CardMedia, Box, Typography, Divider, Grid} from '@mui/material';
 import {Breadcrumbs, DefaultLayout} from 'components/layouts';
 import {MapContainer, Marker, Popup, TileLayer} from 'react-leaflet'
 import LoadingPage from 'pages/LoadingPage';
 import apartmentService from 'services/apartments';
 import {routes} from 'routes';
-import ImageGallery from 'react-image-gallery';
 import constants from 'utils/constants';
+import Carousel from 'react-multi-carousel';
 
+const ImageGallery = ({images}) => {
+  const responsive = {
+    desktop: {
+      breakpoint: {max: 3000, min: 1024},
+      items: 1,
+      slidesToSlide: 1,
+    },
+    tablet: {
+      breakpoint: {max: 1024, min: 464},
+      items: 1,
+      slidesToSlide: 1,
+    },
+    mobile: {
+      breakpoint: {max: 464, min: 0},
+      items: 1,
+      slidesToSlide: 1,
+    },
+  };
 
+  return (
+    <Carousel
+      itemClass="gallery-image-item"
+      responsive={responsive}
+    >
+      {images.map((image, i) => (
+        <CardMedia
+          key={i}
+          component="img"
+          alt="apartment image"
+          width="100%"
+          height="100%"
+          image={image.url}
+        />
+      ))}
+    </Carousel>
+  );
+}
 const GeneralSection = ({object: {description, price_per_month, area_size, floor, number_of_rooms}}) => {
   const descriptionArray = description.split(/\r?\n/);
 
@@ -113,13 +149,8 @@ export default class ApartmentDetailPage extends React.Component {
   }
 
   render() {
-    const {loading, object, tab} = this.state;
+    const {loading, object} = this.state;
     if (loading) return (<LoadingPage/>);
-
-    const images = object.images.map(item => item.url).map(url => ({
-      original: url,
-      thumbnail: url,
-    }));
 
     return (
       <DefaultLayout>
@@ -127,9 +158,9 @@ export default class ApartmentDetailPage extends React.Component {
           <Breadcrumbs items={[routes.dashboard, routes.map]} lastLabel={`Apartment - ${object.name}`}/>
           <Card>
             <CardContent>
-              {images.length !== 0 &&
-              <Box sx={{width: '100%'}}>
-                <ImageGallery lazyLoad={true} items={images}/>
+              {object.images.length !== 0 &&
+              <Box sx={{width: '100%', pb: 2}}>
+                <ImageGallery images={object.images} />
               </Box>
               }
               <GeneralSection object={object}/>

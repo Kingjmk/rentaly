@@ -13,12 +13,12 @@ import ApartmentPlaceholderImg from 'assets/apartment_placeholder.png';
 import {Link as RouterLink} from 'react-router-dom';
 
 
-const ImageComponent = ({image_url: image = ApartmentPlaceholderImg}) => (
+const ImageComponent = ({image_url: image}) => (
   <CardMedia
     component="img"
     alt="apartment image"
     height="200"
-    image={image}
+    image={image || ApartmentPlaceholderImg}
   />
 );
 

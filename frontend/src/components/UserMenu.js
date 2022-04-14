@@ -3,8 +3,8 @@ import {
   Box, Avatar, Menu, MenuItem, ListItemIcon, IconButton, Divider, Tooltip,
 } from '@mui/material';
 import {Link as RouterLink} from 'react-router-dom';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
+import {Logout as LogoutIcon} from '@mui/icons-material';
+import {routes} from 'routes';
 
 const getInitial = (name) => name[0];
 
@@ -72,15 +72,9 @@ const UserMenu = ({user}) => {
           <Avatar sx={{width: 32, height: 32}}>{getInitial(user.first_name)}</Avatar> {user.first_name}
         </MenuItem>
         <Divider />
-        <MenuItem>
+        <MenuItem component={RouterLink} to={routes.logout.path}>
           <ListItemIcon>
-            <Settings fontSize="small"/>
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-        <MenuItem component={RouterLink} to={'/logout'}>
-          <ListItemIcon>
-            <Logout fontSize="small"/>
+            <LogoutIcon fontSize="small"/>
           </ListItemIcon>
           Logout
         </MenuItem>

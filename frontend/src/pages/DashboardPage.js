@@ -1,23 +1,41 @@
 import React from 'react';
-import {Container, Box, TextField, Typography} from '@mui/material';
+import {Container, Box, Typography, Link} from '@mui/material';
 import {DefaultLayout} from 'components/layouts';
+import SearchableAddressField from 'components/SearchableAddressField';
 import constants from 'utils/constants';
+import {routes} from 'routes';
+
 
 export default class DashboardPage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      address: null,
-    };
+    this.state = {disabled: false}
   }
 
-  handleSubmit() {
-    // redirect to map page
+  navigateToMap(place = {}) {
+    this.setState({disabled: true});
+    const urlParamString = new URLSearchParams({
+      address: place?.display_name || '',
+      lat: place?.lat || '',
+      lng: place?.lng || '',
+    }).toString();
+
     this.props.navigate({
-      pathname: '/map',
-      search: `?address=${this.state.address || ''}`,
+      pathname: routes.map.path,
+      search: urlParamString,
     });
   }
+
+  handleLocationSelect(event, newValue) {
+    this.navigateToMap(newValue);
+  }
+
+  renderNoOptionsText = () => (
+    <div>
+      <span>No places found? you can open </span>
+      <Link onClick={() => this.navigateToMap()} variant="body">the map instead</Link>
+    </div>
+  )
 
   render() {
     return (
@@ -28,16 +46,10 @@ export default class DashboardPage extends React.Component {
               {constants.WEBSITE_NAME}
             </Typography>
             <p>{constants.WEBSITE_DESCRIPTION}</p>
-            <TextField
-              fullWidth
-              style={{backgroundColor: '#fff'}}
-              id="address"
-              placeholder="Search City, Neighbourhood or Address"
-              variant="outlined"
-              onChange={(event) => this.setState({address: event.target.value})}
-              onKeyPress={event => {
-                if (event.key === 'Enter') this.handleSubmit();
-              }}
+            <SearchableAddressField
+              onLocationSelect={this.handleLocationSelect.bind(this)}
+              renderNoOptionsText={this.renderNoOptionsText.bind(this)}
+              disabled={this.state.disabled}
             />
           </Box>
         </Container>

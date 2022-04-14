@@ -1,7 +1,7 @@
-from django_filters import rest_framework as filters
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, response
 from rest_framework.status import HTTP_201_CREATED
-from . import serializers
+from . import serializers, filters
 from ..utils import Paginator
 from .. import permissions
 import core.models
@@ -9,12 +9,15 @@ import core.models
 
 class SearchListView(generics.ListAPIView):
     permission_classes = []
-    authentication_classes = []
-    queryset = core.models.Apartment.objects.prefetch_related('images')
     serializer_class = serializers.SearchSerializer
-    filter_backends = [filters.DjangoFilterBackend]
-    filterset_fields = ['area_size', 'price_per_month', 'number_of_rooms']
+    filterset_class = filters.SearchListFilter
+    filter_backends = [DjangoFilterBackend]
     pagination_class = Paginator
+
+    def get_queryset(self):
+        return core.models.Apartment.objects.prefetch_related('images').filter(
+            longitude__isnull=False, latitude__isnull=False,
+        ).allowed_for(self.request.user)
 
 
 class ApartmentListView(generics.ListAPIView):
@@ -25,7 +28,7 @@ class ApartmentListView(generics.ListAPIView):
 
 
 class ApartmentDetailView(generics.RetrieveAPIView):
-    permission_classes = [permissions.AdminPermission | permissions.RealtorPermission]
+    permission_classes = [permissions.AdminPermission | permissions.RealtorPermission | permissions.ClientPermission]
     queryset = core.models.Apartment.objects.prefetch_related('images').order_by('id')
     serializer_class = serializers.ListDetailApartmentSerializer
 

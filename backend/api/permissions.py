@@ -23,4 +23,4 @@ class ClientPermission(permissions.BasePermission):
         if not request.user.is_authenticated:
             return False
 
-        return request.user.role == Roles.Client
+        return request.user.role == Roles.CLIENT

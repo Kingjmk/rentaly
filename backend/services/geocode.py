@@ -14,5 +14,10 @@ def locate(address):
             'q': address,
             'format': 'json',
             'countrycodes': ','.join(COUNTRY_CODES),
+            'addressdetails': 1,
+            'namedetails': 1,
+            'extratags': 1,
+            'normalizeaddress': 1,
+            'normalizecity': 1,
         }
     )

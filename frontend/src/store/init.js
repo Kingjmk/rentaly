@@ -12,17 +12,16 @@ export const appInitActions = async (dispatch) => {
   delete L.Icon.Default.prototype._getIconUrl;
 
   L.Icon.Default.mergeOptions({
-    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    iconRetinaUrl: require('assets/leaflet/marker-icon.png'),
+    iconUrl: require('assets/leaflet/marker-icon.png'),
     shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
   });
-
 };
 
 export const ProviderWrapper = ({children}) => (
   <Provider store={store()}>
     <ConfirmProvider>
-      <SnackbarProvider>
+      <SnackbarProvider domRoot={document.getElementById('react-notification')}>
         {children}
       </SnackbarProvider>
     </ConfirmProvider>

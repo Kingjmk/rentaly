@@ -3,6 +3,7 @@ import {Grid, Container, Typography, Stack, Button} from '@mui/material';
 import {PlainLayout} from 'components/layouts';
 import {Link as RouterLink} from 'react-router-dom';
 import {ArrowBack as ArrowBackIcon} from '@mui/icons-material';
+import {routes} from 'routes';
 
 const NotFoundPage = () => (
   <PlainLayout>
@@ -35,7 +36,7 @@ const NotFoundPage = () => (
           spacing={2}
           justifyContent="center"
         >
-          <Button component={RouterLink} to={'/dashboard'} variant="contained">
+          <Button component={RouterLink} to={routes.dashboard.path} variant="contained">
             <ArrowBackIcon /> Go to dashboard
           </Button>
         </Stack>

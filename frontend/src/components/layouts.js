@@ -20,18 +20,19 @@ const theme = createTheme({
 const navbarItems = [
   routes.users,
   routes.apartments,
+  routes.map,
 ];
 
 const NavbarItems = ({isAuthenticated, user}) => {
   const items = [];
 
   for (const {roles, path, label} of navbarItems) {
-    if (!isAuthenticated || roles.includes(user.roles)) continue;
-
-    items.push({
-      path: path,
-      label: label,
-    })
+    if (roles.length === 0 || (isAuthenticated && roles.includes(user.roles))) {
+      items.push({
+        path: path,
+        label: label,
+      })
+    }
   }
 
   return (
@@ -69,10 +70,10 @@ const UserButtons = () => {
     return (
       <React.Fragment>
         <NavbarItems isAuthenticated={isAuthenticated} user={user}/>
-        <Button component={RouterLink} to={'/login'} color='primary' sx={{my: 1, mx: 1.5}}>
+        <Button component={RouterLink} to={routes.login.path} color='primary' sx={{my: 1, mx: 1.5}}>
           Login
         </Button>
-        <Button component={RouterLink} to={'/register'} color="primary" variant='contained' sx={{my: 1, mx: 1.5}}>
+        <Button component={RouterLink} to={routes.register.path} color="primary" variant='contained' sx={{my: 1, mx: 1.5}}>
           Register
         </Button>
       </React.Fragment>
@@ -108,7 +109,7 @@ export const DefaultAppBar = ({maxWidth = 'xl'}) => (
     <Container maxWidth={maxWidth}>
       <Toolbar sx={{flexWrap: 'wrap'}}>
         <Box sx={{flexGrow: 1}}>
-          <Typography component={RouterLink} to={'/dashboard'} variant='h6' color='inherit' noWrap style={{textDecoration: 'none'}}>
+          <Typography component={RouterLink} to={routes.dashboard.path} variant='h6' color='inherit' noWrap style={{textDecoration: 'none'}}>
             {constants.WEBSITE_NAME}
           </Typography>
         </Box>

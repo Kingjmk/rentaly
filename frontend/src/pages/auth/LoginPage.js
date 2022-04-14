@@ -9,11 +9,12 @@ import {PlainLayout} from 'components/layouts';
 import ReactiveForm from 'components/ReactiveForm';
 import {getErrorMessage, hasError} from 'utils/forms';
 import {login} from 'store/auth/authenticationSlice';
-
+import {routes} from 'routes';
 
 class Page extends React.Component {
   constructor(props) {
     super(props);
+    this.previouslocation = new URLSearchParams(this.props.location.search).get('next');
     this.state = {
       success: false,
     }
@@ -28,7 +29,11 @@ class Page extends React.Component {
 
     setTimeout(() => {
       // wait before redirecting to login to leave time for the user to read the message
-      this.props.navigate('/dashboard');
+      if (this.previouslocation) {
+        this.props.navigate(this.previouslocation);
+      } else {
+        this.props.navigate(routes.dashboard.path);
+      }
     }, 1000);
   }
 
@@ -40,6 +45,12 @@ class Page extends React.Component {
 
     return await this.props.dispatch(login(submitData)).unwrap();
   };
+
+  componentDidMount() {
+    if (this.previouslocation) {
+      this.props.snackbar.enqueueSnackbar('Please login to access this page', {variant: 'warning'});
+    }
+  }
 
   renderForm({loading, errors}, handleSubmit) {
     return (
@@ -82,7 +93,7 @@ class Page extends React.Component {
         </LoadingButton>
         <Grid container>
           <Grid item>
-            <Link component={RouterLink} to={'/register'} variant="body2">
+            <Link component={RouterLink} to={routes.register.path} variant="body2">
               {'Don\'t have an account? Sign Up'}
             </Link>
           </Grid>

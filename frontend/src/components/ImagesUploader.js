@@ -92,7 +92,7 @@ export default class ImagesUploader extends React.Component {
     return (
       <Box sx={{mb: 3}}>
         <ImageList cols={4} gap={10} sx={{width: '100%', maxHeight: 700}}>
-          {items.map((item) => (
+          {items.map(item => (
             <ImageListItem key={item.id} cols={1}>
               <img
                 src={item.url}

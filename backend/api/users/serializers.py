@@ -50,3 +50,12 @@ class EditUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = accounts.models.User
         fields = ['email', 'first_name', 'last_name', 'role']
+
+    def validate(self, data):
+        data = super().validate(data)
+        request = self.context.get('request')
+
+        if self.instance.pk == request.user.pk:
+            raise serializers.ValidationError('You cannot edit your own account!')
+
+        return data

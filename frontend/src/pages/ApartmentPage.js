@@ -44,9 +44,9 @@ const ImageGallery = ({images}) => {
       itemClass="gallery-image-item"
       responsive={responsive}
     >
-      {images.map((image, i) => (
+      {images.map(image => (
         <CardMedia
-          key={i}
+          key={image.id}
           component="img"
           alt="apartment image"
           width="100%"

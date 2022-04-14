@@ -11,6 +11,7 @@ import ReactiveForm from 'components/ReactiveForm';
 import {getErrorMessage, hasError} from 'utils/forms';
 import {register} from 'store/auth/authenticationSlice';
 import {UserRoles, UserRolesLabels} from 'utils/common';
+import {routes} from 'routes';
 
 class Page extends React.Component {
   constructor(props) {
@@ -28,7 +29,7 @@ class Page extends React.Component {
     this.props.snackbar.enqueueSnackbar('Registration successful, redirecting to login now...', {variant: 'success'});
     setTimeout(() => {
       // wait before redirecting to login to leave time for the user to read the message
-      this.props.navigate('/login');
+      this.props.navigate(routes.login.path);
     }, 1000);
   }
 
@@ -141,7 +142,7 @@ class Page extends React.Component {
         </LoadingButton>
         <Grid container>
           <Grid item>
-            <Link component={RouterLink} to={'/login'} variant="body2">
+            <Link component={RouterLink} to={routes.login.path} variant="body2">
               {'Already have an account? Sign in'}
             </Link>
           </Grid>

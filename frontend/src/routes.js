@@ -4,20 +4,20 @@ import {Navigate, useLocation, useNavigate, useParams} from 'react-router-dom';
 import {useSnackbar} from 'notistack';
 import {useConfirm} from 'material-ui-confirm';
 
-export const IndexRedirect = () => (<Navigate to={'/dashboard'}/>);
-export const LoginRedirect = ({location}) => (<Navigate to={{pathname: '/login', state: {from: location}}}/>);
+export const IndexRedirect = () => (<Navigate to={routes.dashboard.path}/>);
+export const LoginRedirect = ({location}) => (<Navigate to={{pathname: routes.login.path, search: `?next=${location}`}}/>);
 
 export const routes = {
   index: {
     label: 'Index',
-    path: '',
+    path: '/',
     component: IndexRedirect,
     exact: false,
     roles: [],
   },
   register: {
     label: 'Register',
-    path: 'register',
+    path: '/register',
     component: React.lazy(() => import('pages/auth/RegisterPage')),
     exact: true,
     roles: [],
@@ -60,7 +60,7 @@ export const routes = {
   apartment_detail: {
     label: 'Edit Apartment',
     path: '/apartments/:id/view',
-    component: React.lazy(() => import('pages/management/apartment/DetailPage')),
+    component: React.lazy(() => import('pages/ApartmentPage')),
     exact: true,
     roles: [UserRoles.ADMIN, UserRoles.REALTOR, UserRoles.CLIENT],
   },
@@ -123,15 +123,17 @@ const HookInjectorComponent = ({component: Component}) => {
 export class AuthenticateRoute extends React.Component {
   // Private route restrict to access public pages after login.
   render() {
-    let {isAuthenticated, currentUser, roles, location, component} = this.props;
+    const {isAuthenticated, currentUser, roles, component} = this.props;
+    const prevLocation = window.location.pathname;
+
     if (roles.length !== 0) {
       if (!isAuthenticated) {
-        return (<LoginRedirect location={location}/>);
+        return (<LoginRedirect location={prevLocation}/>);
       }
 
       if (!roles.includes(currentUser.role)) {
         // TODO: show message or something
-        return (<LoginRedirect location={location}/>);
+        return (<LoginRedirect location={prevLocation}/>);
       }
     }
 

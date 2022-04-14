@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Box} from '@mui/material';
+import {Box, Link} from '@mui/material';
 import {MapContainer, Marker, Popup, TileLayer} from 'react-leaflet'
 import constants from 'utils/constants';
 import {FmdGoodOutlined as PinIcon, PushPinOutlined as PushPinIcon} from '@mui/icons-material';
@@ -17,7 +17,7 @@ const DraggableMarker = React.forwardRef(({initialPosition, onChange}, ref) => {
         onChange(marker.getLatLng());
       }
     },
-  }), []);
+  }), [ref, setPosition, onChange]);
 
   return (
     <Marker
@@ -44,12 +44,12 @@ const TopRightControl = ({onSetMarker, onFlyTo, onSearch}) => (
             if (event.key === 'Enter') onSearch(event.target.value);
           }}
         />
-        <a onClick={onSetMarker} className="" href="#" title="Set Pin to center" role="button" aria-label="Set Pin to center" style={{paddingTop: '4px', borderRight: '2px solid rgba(0,0,0,0.2)', borderBottom: 'none'}}>
+        <Link component="a" onClick={onSetMarker} className="" title="Set Pin to center" role="button" aria-label="Set Pin to center" style={{paddingTop: '4px', borderRight: '2px solid rgba(0,0,0,0.2)', borderBottom: 'none'}}>
           <PushPinIcon fontSize="small"/>
-        </a>
-        <a onClick={onFlyTo} className="" href="#" title="Go to Pin" role="button" aria-label="Go to Pin" style={{paddingTop: '4px'}}>
+        </Link>
+        <Link component="a" onClick={onFlyTo} className="" title="Go to Pin" role="button" aria-label="Go to Pin" style={{paddingTop: '4px'}}>
           <PinIcon fontSize="small"/>
-        </a>
+        </Link>
       </Box>
     </div>
   </div>
@@ -88,18 +88,18 @@ export default class MapField extends React.Component {
   }
 
   handleControlFlyTo() {
-    this.mapRef.current._map.setView(this.state.pinPosition, 14);
+    this.mapRef.current.setView(this.state.pinPosition, 14);
   }
 
   handleControlSetMarker() {
-    const position = this.mapRef.current._map.getCenter();
+    const position = this.mapRef.current.getCenter();
     this.markerRef.current.setLatLng(position);
     this.handlePinPositionChange(position);
   }
 
   async handleControlSearch(query) {
     const newPosition = await geocodeService.locate(query);
-    this.mapRef.current._map.setView(newPosition, 14);
+    this.mapRef.current.setView(newPosition, 14);
   }
 
   handlePinPositionChange(position) {
@@ -113,11 +113,10 @@ export default class MapField extends React.Component {
   render() {
     return (
       <Box sx={this.props.sx}>
-        <MapContainer center={this.state.center} zoom={this.state.zoom} style={{height: '50vh', width: '100%'}}>
+        <MapContainer ref={this.mapRef} center={this.state.center} zoom={this.state.zoom} style={{height: '50vh', width: '100%'}}>
           <TileLayer
             attribution={constants.TILE_ATTRIBUTION}
             url={constants.TILE_LAYER_URL}
-            ref={this.mapRef}
             on
           />
           <TopRightControl onSetMarker={this.handleControlSetMarker} onFlyTo={this.handleControlFlyTo} onSearch={this.handleControlSearch}/>

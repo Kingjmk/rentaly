@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {logout} from 'store/auth/authenticationSlice';
 import LoadingPage from 'pages/LoadingPage';
-
+import {routes} from 'routes';
 
 class Page extends React.Component {
   constructor(props) {
@@ -15,7 +15,7 @@ class Page extends React.Component {
       this.setState({loading: true});
 
       await this.props.dispatch(logout({})).unwrap();
-      this.props.navigate('/dashboard');
+      this.props.navigate(routes.dashboard.path);
       this.setState({
         loading: false,
       });

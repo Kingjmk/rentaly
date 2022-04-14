@@ -1,10 +1,18 @@
 from django.utils.translation import gettext_lazy as _
 from django.db import models
+import accounts.models
 
 
 class ApartmentStates(models.TextChoices):
     AVAILABLE = 'A', _('Available')
     RENTED = 'R', _('RENTED')
+
+
+class ApartmentQueryset(models.QuerySet):
+    def allowed_for(self, user):
+        if not user.is_authenticated or user.role == accounts.models.Roles.CLIENT:
+            return self.filter(state=ApartmentStates.AVAILABLE)
+        return self
 
 
 class Apartment(models.Model):
@@ -21,6 +29,8 @@ class Apartment(models.Model):
     created_by = models.ForeignKey('accounts.User', on_delete=models.PROTECT, related_name='+')
     created_on = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_on = models.DateTimeField(auto_now=True)
+
+    objects = ApartmentQueryset.as_manager()
 
     class Meta:
         ordering = ['-id']
